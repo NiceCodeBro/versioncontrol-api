@@ -48,7 +48,7 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
 
     // when
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({date_from: '2021-10-10', per_page: 20});
+                                         .query({date_from: '2021-10-10', per_page: 10});
 
     // then
     const expected = {
@@ -67,7 +67,7 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
 
     // when
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({date_from: '2021-10-10', per_page: 20, language_filter: 'JavaScript' });
+                                         .query({date_from: '2021-10-10', per_page: 10, language_filter: 'JavaScript' });
     // then
     const expected = {
       repositories: [
@@ -78,13 +78,27 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
     expect(response.body).toEqual(expected);
   })
 
+  it('return 400 and if per_page different value than 10, 50 or 100', async () => {
+    //given
+    mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});
+
+    // when
+    const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
+                                         .query({per_page: 120});
+    // then
+
+    const expected =  {"message": "Bad Request"}
+    expect(response.status).toEqual(400);
+    expect(response.body).toEqual(expected);
+  })
+
   it('return 400 and if date_from does not exist in query', async () => {
     //given
     mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});
 
     // when
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({per_page: 20});
+                                         .query({per_page: 10});
     // then
 
     const expected =  {"message": "Bad Request"}
@@ -112,7 +126,7 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
     
     // when
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({date_from: '2021-10-10', per_page: 20});
+                                         .query({date_from: '2021-10-10', per_page: 10});
     // then
     const expected =  {"message": "Service Unavailable"}
     expect(response.status).toEqual(503);
