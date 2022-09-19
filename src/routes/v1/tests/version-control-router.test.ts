@@ -84,10 +84,39 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
 
     // when
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({per_page: 120});
+                                         .query({date_from: '2021-10-10', per_page: 120 });
+                                         
     // then
+    const expected =  {"message": "per page can only be one of 10, 50, 100."}
+    expect(response.status).toEqual(400);
+    expect(response.body).toEqual(expected);
+  })
 
-    const expected =  {"message": "Bad Request"}
+  it('return 400 and if date_from is not defined', async () => {
+    //given
+    mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});
+
+    // when
+    const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
+                                         .query({per_page: 120});
+                                         
+    // then
+    const expected =  {"message": "date from is a required field."}
+    expect(response.status).toEqual(400);
+    expect(response.body).toEqual(expected);
+  })
+
+  it('return 400 and if date_from is in the future', async () => {
+    //given
+    mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});
+
+    // when
+    const currentDate = new Date();
+    const dateOfNextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);;
+    const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
+                                         .query({date_from: dateOfNextMonth.toISOString(), per_page: 10, language_filter: 'JavaScript' });
+    // then
+    const expected =  {"message": "date from can not be in the future."}
     expect(response.status).toEqual(400);
     expect(response.body).toEqual(expected);
   })
@@ -100,8 +129,7 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
                                          .query({per_page: 10});
     // then
-
-    const expected =  {"message": "Bad Request"}
+    const expected =  {"message": "date from is a required field."}
     expect(response.status).toEqual(400);
     expect(response.body).toEqual(expected);
   })
@@ -114,8 +142,7 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
     const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
                                          .query({per_page: 'not_numeric_string', date_from: '2021-10-10'});
     // then
-
-    const expected =  {"message": "Bad Request"}
+    const expected =  {"message": "per page should be numeric value."}
     expect(response.status).toEqual(400);
     expect(response.body).toEqual(expected);
   })

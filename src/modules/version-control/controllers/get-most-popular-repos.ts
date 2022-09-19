@@ -17,11 +17,12 @@ export class GetMostPopularReposController extends BaseController  {
     const dateFrom = httpRequest.query.date_from;
     let perPage = httpRequest.query.per_page;
 
+    // query validations
     this.validatePerPage(perPage);
     this.validateDateFrom(dateFrom);
-
+   
     if (perPage !== undefined) {
-      perPage = parseInt(perPage);
+      perPage = parseInt(perPage); // convert perPage to integer
     }
 
     const response = await this._usecase.execute({dateFrom: new Date(dateFrom), languageFilter, perPage});
@@ -30,13 +31,16 @@ export class GetMostPopularReposController extends BaseController  {
 
   validatePerPage = (perPage:any) => {
     if (perPage !== undefined && !Number(perPage)) {
-      throw new InputValidationError();
+      throw new InputValidationError('per page should be numeric value.');
     }
   }
 
   validateDateFrom = (dateFrom:any) => {
+    if(dateFrom === undefined){
+      throw new InputValidationError('date from is a required field.');
+    }
     if(!Date.parse(dateFrom)){
-      throw new InputValidationError();
+      throw new InputValidationError('date from should be a valid date.');
     }
   }
 }

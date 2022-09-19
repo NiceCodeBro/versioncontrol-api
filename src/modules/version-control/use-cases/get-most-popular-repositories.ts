@@ -18,14 +18,17 @@ export class GetMostPopularReposUseCase implements
     return repos;
   }
 
-  validateRequest = (request:IGetAllPublicReposRequest) => {
-    // Per page can only be one of 10,50 or 100 if it is used
-    if (request.perPage !== undefined && ![10,50,100].find(n => n === request.perPage)){
-      throw new InputValidationError();
+  validateRequest = (request: IGetAllPublicReposRequest) => {
+    if (request.perPage !== undefined && ![10, 50, 100].find(n => n === request.perPage)){
+      throw new InputValidationError("per page can only be one of 10, 50, 100.");
+    }
+
+    if (request.dateFrom > new Date()) {
+      throw new InputValidationError('date from can not be in the future.');
     }
   }
 
-  filterByLanguageActive = (languageFilter:string | undefined) => {
+  filterByLanguageActive = (languageFilter: string | undefined) => {
     return typeof languageFilter === 'string' && languageFilter.length > 0;
   }
 }
