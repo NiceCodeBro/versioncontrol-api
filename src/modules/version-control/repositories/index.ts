@@ -1,8 +1,8 @@
 import { BaseRepository } from "../../../shared/base-repository";
-import { IGetAllPublicReposResponse } from "./github";
+import { IGetAllPublicReposRequest, IGetMostPopularReposResponse } from "../use-cases";
 
 export interface IVersionControlRepository extends BaseRepository<any> {
-  getMostPopularRepos(): Promise<IGetAllPublicReposResponse[]>;
+  getMostPopularRepos(request:IGetAllPublicReposRequest): Promise<IGetMostPopularReposResponse>;
 }
 
 export * from "./github"
