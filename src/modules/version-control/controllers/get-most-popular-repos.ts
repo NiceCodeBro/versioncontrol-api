@@ -13,9 +13,13 @@ export class GetMostPopularReposController extends BaseController  {
   }
 
   protected async executeUseCase(httpRequest: IHttpRequest): Promise<IHttpResponse> {
-    const languageFilter = httpRequest.query.languageFilter;
-    const perPage = httpRequest.query.perPage;
-    const dateFrom = httpRequest.query.dateFrom;
+    const languageFilter = httpRequest.query.language_filter;
+    const perPage = httpRequest.query.per_page;
+    const dateFrom = httpRequest.query.date_from;
+
+    if (perPage !== undefined && !Number(perPage)) {
+      throw new InputValidationError();
+    }
 
     if(!Date.parse(dateFrom)){
       throw new InputValidationError();
