@@ -1,12 +1,12 @@
 import axios from "axios";
 
 export interface IVersionControlApi {
-  getMostPopularRepos(props: GetMostPopularReposProps): Promise<any>;
+  getMostPopularRepos(props: GetMostPopularReposProps): Promise<GetMostPopularReposResponse>;
 }
 
 export class GitHubApi implements IVersionControlApi {
   async getMostPopularRepos(props: GetMostPopularReposProps): Promise<GetMostPopularReposResponse> {
-    const q = props.createdFrom ? {q: `created:${props.createdFrom.toISOString().slice(0, 10)}` } : {}
+    const query = props.dateFrom ? {q: `created:${props.dateFrom.toISOString().slice(0, 10)}` } : {}
 
     const url = `https://api.github.com/search/repositories`;
     const { data } = await axios.get<GetMostPopularReposResponse>(
@@ -17,7 +17,7 @@ export class GitHubApi implements IVersionControlApi {
           per_page:  props.perPage ? props.perPage : 100,
           sort: 'star',
           order: 'desc',
-          ...q
+          ...query
         }
       }
     );
@@ -26,8 +26,8 @@ export class GitHubApi implements IVersionControlApi {
   }
 }
 interface GetMostPopularReposProps {
-  createdFrom: Date,
-  perPage?: 10 | 50 | 100
+  dateFrom: Date,
+  perPage?: number | undefined
 }
 
 
