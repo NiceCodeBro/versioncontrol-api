@@ -14,18 +14,29 @@ export class GetMostPopularReposController extends BaseController  {
 
   protected async executeUseCase(httpRequest: IHttpRequest): Promise<IHttpResponse> {
     const languageFilter = httpRequest.query.language_filter;
-    const perPage = httpRequest.query.per_page;
     const dateFrom = httpRequest.query.date_from;
+    let perPage = httpRequest.query.per_page;
 
-    if (perPage !== undefined && !Number(perPage)) {
-      throw new InputValidationError();
-    }
+    this.validatePerPage(perPage);
+    this.validateDateFrom(dateFrom);
 
-    if(!Date.parse(dateFrom)){
-      throw new InputValidationError();
+    if (perPage !== undefined) {
+      perPage = parseInt(perPage);
     }
 
     const response = await this._usecase.execute({dateFrom: new Date(dateFrom), languageFilter, perPage});
     return buildHttpResponse(200, response);
+  }
+
+  validatePerPage = (perPage:any) => {
+    if (perPage !== undefined && !Number(perPage)) {
+      throw new InputValidationError();
+    }
+  }
+
+  validateDateFrom = (dateFrom:any) => {
+    if(!Date.parse(dateFrom)){
+      throw new InputValidationError();
+    }
   }
 }
