@@ -6,7 +6,7 @@ export interface IVersionControlApi {
 
 export class GitHubApi implements IVersionControlApi {
   async getMostPopularRepos(props: GetMostPopularReposProps): Promise<GetMostPopularReposResponse> {
-    const query = props.dateFrom ? {q: `created:${props.dateFrom.toISOString().slice(0, 10)}` } : {}
+    const query = props.dateFrom ? {q: `created:>${props.dateFrom.toISOString().slice(0, 10)}` } : {}
 
     const url = `https://api.github.com/search/repositories`;
     const { data } = await axios.get<GetMostPopularReposResponse>(
