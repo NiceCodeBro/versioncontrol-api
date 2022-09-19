@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
-
+import {v1Router} from './routes';
 
 dotenv.config();
 
@@ -13,13 +13,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/', async (req, res) =>{
-  try {
-      res.json('Test endpoint')
-  } catch(error) {
-      return res.status(500).end();
-  }
-})
+app.use('/api/v1', v1Router);
+
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
