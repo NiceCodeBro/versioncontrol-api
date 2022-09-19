@@ -1,0 +1,32 @@
+{
+  "name": "github_populer_repositories",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^18.7.14",
+    "@types/supertest": "^2.0.12",
+    "concurrently": "^7.3.0",
+    "jest": "28.1.2",
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.8.2"
+  }
+}
