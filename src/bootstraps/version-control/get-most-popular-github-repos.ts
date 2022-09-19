@@ -3,7 +3,7 @@ import { GitHubApi } from "../../modules/version-control/external-apis";
 import { GitHubRepository } from "../../modules/version-control/repositories";
 import { GetMostPopularReposUseCase } from "../../modules/version-control/use-cases";
 
-export const BootstrapControllerGetPopularRepos = () => {
+export const BootstrapControllerGetPopularGitHubRepos = () => {
   const github = new GitHubApi();
   const repository = new GitHubRepository(github);
   const usecase = new GetMostPopularReposUseCase(repository);
