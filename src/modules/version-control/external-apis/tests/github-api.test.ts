@@ -9,7 +9,7 @@ describe('GitHub Api `s', ()=> {
     jest.resetAllMocks();
   });
 
-  it('getMostPopularRepos should be called with dateFrom, language and perPage in a right structure', async () => {
+  it('getMostPopularRepos should call axios with dateFrom, language and perPage in a right structure', async () => {
     //given
     const perPage = 50;
     const dateFrom = '2020-10-10';
@@ -20,10 +20,9 @@ describe('GitHub Api `s', ()=> {
     const github = new GitHubApi();
     github.getMostPopularRepos({dateFrom: new Date(dateFrom), languageFilter: language, perPage});
 
-
     // then
     const expectedUrl = `https://api.github.com/search/repositories?q=created:>${dateFrom}+language:${language}`;
-    const expectedHeader  = {"headers": {"Accept": "application/json"}, params: {"order": "desc", "per_page": perPage, "sort": "star"} }
-    expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedHeader);
+    const expectedConfig  = {"headers": {"Accept": "application/json"}, params: {"order": "desc", "per_page": perPage, "sort": "star"} }
+    expect(axios.get).toHaveBeenCalledWith(expectedUrl, expectedConfig);
   })
 })
