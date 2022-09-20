@@ -61,23 +61,6 @@ describe('/api/v1/version-control/github/popular-repositories should', ()=> {
     expect(response.body).toEqual(expected);
   })
 
-  it('return 200 and filter result by JavaScript', async () => {
-    //given
-    mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});
-
-    // when
-    const response = await supertest(app).get(`${apiBasePath}/popular-repositories`)
-                                         .query({date_from: '2021-10-10', per_page: 10, language_filter: 'JavaScript' });
-    // then
-    const expected = {
-      repositories: [
-        {"creationDate": "2021-10-14", "fullName": "jakky/X-Road-tests", "language": "JavaScript", "name": "X-Road-tests", "numOfStars": 2}, 
-        {"creationDate": "2020-06-14", "fullName": "jakky/X-Road-play", "language": "JavaScript", "name": "X-Road-Play", "numOfStars": 7}
-    ]}
-    expect(response.status).toEqual(200);
-    expect(response.body).toEqual(expected);
-  })
-
   it('return 400 and if per_page different value than 10, 50 or 100', async () => {
     //given
     mockedAxios.get.mockResolvedValueOnce({data: mockResolveValues});

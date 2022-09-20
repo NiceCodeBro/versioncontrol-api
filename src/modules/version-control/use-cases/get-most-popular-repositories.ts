@@ -1,6 +1,6 @@
 import { IGetAllPublicReposRequest, IGetMostPopularReposResponse } from ".";
 import { InputValidationError } from "../../../shared/error-types/input-validation-error";
-import { IUseCase } from "../../../shared/use-case-interface";
+import { IUseCase } from "../../../shared/use-case";
 import { IVersionControlRepository } from "../repositories";
 
 export class GetMostPopularReposUseCase implements 
@@ -10,12 +10,7 @@ export class GetMostPopularReposUseCase implements
   async execute(request: IGetAllPublicReposRequest): Promise<IGetMostPopularReposResponse> {     
     this.validateRequest(request);
     
-    const repos = await this._versionControlRepository.getMostPopularRepos(request);
-
-    if (this.filterByLanguageActive(request.languageFilter)) {
-      return { repositories: repos.repositories.filter(repo => repo.language === request.languageFilter) }
-    }
-    return repos;
+    return await this._versionControlRepository.getMostPopularRepos(request);
   }
 
   validateRequest = (request: IGetAllPublicReposRequest) => {
@@ -26,9 +21,5 @@ export class GetMostPopularReposUseCase implements
     if (request.dateFrom > new Date()) {
       throw new InputValidationError('date from can not be in the future.');
     }
-  }
-
-  filterByLanguageActive = (languageFilter: string | undefined) => {
-    return typeof languageFilter === 'string' && languageFilter.length > 0;
   }
 }
