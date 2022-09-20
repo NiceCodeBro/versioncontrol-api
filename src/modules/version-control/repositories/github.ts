@@ -1,17 +1,11 @@
-import { AxiosError } from "axios";
 import { IVersionControlRepository } from ".";
-import { ApiError } from "../../../shared/error-types/api-error";
-import { NotFoundError } from "../../../shared/error-types/not-found-error";
 import { IVersionControlApi } from "../external-apis/github-api";
-import { IGetAllPublicReposRequest, IGetMostPopularReposResponse, IRepository } from "../use-cases";
+import { IGetMostPopularReposRequest, IGetMostPopularReposResponse } from "../use-cases";
 
 export class GitHubRepository implements IVersionControlRepository {
   constructor(private _githubApi:IVersionControlApi) {}
 
-  async getMostPopularRepos(request:IGetAllPublicReposRequest): Promise<IGetMostPopularReposResponse>  {
-    try {
-      const props = {dateFrom: request.dateFrom, 
-                perPage: request.perPage,languageFilter: request.languageFilter };
+  async getMostPopularRepos(request:IGetMostPopularReposRequest): Promise<IGetMostPopularReposResponse>  {
       const repos = await this._githubApi.getMostPopularRepos({...request});
 
       const repositories = repos.items.map((repo) => ({
@@ -22,12 +16,5 @@ export class GitHubRepository implements IVersionControlRepository {
           language: repo.language
       }));
       return {repositories} as IGetMostPopularReposResponse;
-    } catch(err) {
-      const error = err as AxiosError;
-      if (error.isAxiosError && error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-      throw new ApiError();
-    } 
   }
 }

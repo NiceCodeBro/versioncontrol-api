@@ -1,4 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { ApiError } from "../../../shared/error-types/api-error";
+import { NotFoundError } from "../../../shared/error-types/not-found-error";
 
 export interface IVersionControlApi {
   getMostPopularRepos(props: GetMostPopularReposProps): Promise<GetMostPopularReposResponse>;
@@ -12,19 +14,27 @@ export class GitHubApi implements IVersionControlApi {
     }
 
     const url = `https://api.github.com/search/repositories?${query}`;
-    const { data } = await axios.get<GetMostPopularReposResponse>(
-      url,
-      {
-        headers: { Accept: 'application/json'},
-        params: { 
-          per_page: props.perPage ? props.perPage : 100,
-          sort: 'star',
-          order: 'desc'
+    try {
+      const { data } = await axios.get<GetMostPopularReposResponse>(
+        url,
+        {
+          headers: { Accept: 'application/json'},
+          params: { 
+            per_page: props.perPage ? props.perPage : 100,
+            sort: 'star',
+            order: 'desc'
+          }
         }
+      );
+      return data;
+    } catch(err) {
+      const error = err as AxiosError;
+      if (error.isAxiosError && error.response?.status === 404) {
+        throw new NotFoundError();
       }
-    );
-
-    return data;
+      throw new ApiError();
+    }
+    
   }
 }
 export interface GetMostPopularReposProps {
