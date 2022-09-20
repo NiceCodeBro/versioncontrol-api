@@ -1,5 +1,4 @@
-
-export interface IGetAllPublicReposRequest {
+export interface IGetMostPopularReposRequest {
   languageFilter?: string;
   perPage?: number;
   dateFrom: Date;
