@@ -6,18 +6,20 @@ export interface IVersionControlApi {
 
 export class GitHubApi implements IVersionControlApi {
   async getMostPopularRepos(props: GetMostPopularReposProps): Promise<GetMostPopularReposResponse> {
-    const query = props.dateFrom ? {q: `created:>${props.dateFrom.toISOString().slice(0, 10)}` } : {}
+    let query = `q=created:>${props.dateFrom.toISOString().slice(0, 10)}`;
+    if (props.languageFilter) {
+      query += '+language:' + props.languageFilter;
+    }
 
-    const url = `https://api.github.com/search/repositories`;
+    const url = `https://api.github.com/search/repositories?${query}`;
     const { data } = await axios.get<GetMostPopularReposResponse>(
       url,
       {
         headers: { Accept: 'application/json'},
         params: { 
-          per_page:  props.perPage ? props.perPage : 100,
+          per_page: props.perPage ? props.perPage : 100,
           sort: 'star',
-          order: 'desc',
-          ...query
+          order: 'desc'
         }
       }
     );
@@ -25,9 +27,10 @@ export class GitHubApi implements IVersionControlApi {
     return data;
   }
 }
-interface GetMostPopularReposProps {
+export interface GetMostPopularReposProps {
   dateFrom: Date,
-  perPage?: number | undefined
+  perPage?: number | undefined,
+  languageFilter?: string | undefined;
 }
 
 

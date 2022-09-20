@@ -10,8 +10,9 @@ export class GitHubRepository implements IVersionControlRepository {
 
   async getMostPopularRepos(request:IGetAllPublicReposRequest): Promise<IGetMostPopularReposResponse>  {
     try {
-      const props = {dateFrom: request.dateFrom, perPage: request.perPage};
-      const repos = await this._githubApi.getMostPopularRepos(props);
+      const props = {dateFrom: request.dateFrom, 
+                perPage: request.perPage,languageFilter: request.languageFilter };
+      const repos = await this._githubApi.getMostPopularRepos({...request});
 
       const repositories = repos.items.map((repo) => ({
           name: repo.name,
